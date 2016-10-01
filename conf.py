@@ -10,9 +10,7 @@ import sys
 SAVEDIR = "dotfiles/"
 
 def ask(text, default=None):
-    """
-    Ask user a question in standard style.
-    """
+    """Ask user a question in standard style."""
 
     while True:
         print("{text} [{0}/{1}]".format(
@@ -30,12 +28,13 @@ def ask(text, default=None):
 
 
 def join_path(*argc):
+    """Join any number of path parts to correct path."""
     from operator import add
     return os.path.abspath(reduce(add, argc, ""))
 
 
 def commit_changes(text=None):
-    #TODO
+    """Commit changes to git repository."""
     text = text or datetime.datetime.now().strftime("%c")
     os.system("git commit -am \"{0}\"".format(text))
     os.system("git push origin master")
@@ -43,6 +42,7 @@ def commit_changes(text=None):
 
 
 def save_file(filename, yes=False):
+    """Save file in SAVEDIR."""
     if yes or ask("Save {0}?".format(filename)):
         try:
             from_file = open(filename, "r")
@@ -59,6 +59,7 @@ def save_file(filename, yes=False):
 
 
 def save_files(filenames, text=None, yes=False):
+    """Save some files and commit them."""
     for f in filenames:
         save_file(f, yes)
     commit_changes(text)
