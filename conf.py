@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+import datetime
 import os
 import os.path
 import sys
@@ -35,7 +36,10 @@ def join_path(*argc):
 
 def commit_changes(text=None):
     #TODO
-    print("Commit changes with message {0}...".format(text))
+    text = text or datetime.datetime.now().strftime("%c")
+    os.system("git commit -am \"{0}\"".format(text))
+    os.system("git push origin master")
+    print("Commited changes with message '{0}'.".format(text))
 
 
 def save_file(filename, yes=False):
