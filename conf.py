@@ -7,7 +7,7 @@ import os
 import os.path
 import sys
 
-SAVEDIR = "dotfiles/"
+SAVEDIR = "~/dotfiles/"
 
 def ask(text, default=None):
     """Ask user a question in standard style."""
