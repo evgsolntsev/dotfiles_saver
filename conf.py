@@ -49,6 +49,7 @@ def save_file(filename, yes=False):
             to_name = join_path(SAVEDIR, os.path.basename(filename))
             to_file = open(to_name, "w")
             to_file.write(from_file.read())
+            os.system("git add {0}".format(to_file))
             print("Saved {0} to {1}".format(filename, to_name))
         except Exception as e:
             print("File {0} didn't save: {1}".format(filename, e))
