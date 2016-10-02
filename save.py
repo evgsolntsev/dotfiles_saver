@@ -11,46 +11,18 @@ import common
 import state
 
 
-def ask(text, default=None):
-    """Ask user a question in standard style."""
-
-    while True:
-        print("{text} [{0}/{1}]".format(
-            "Y" if default == True else "y",
-            "N" if default == False else "n",
-            text=text
-        ))
-        s = raw_input()
-        if s in ["Y", "y"]:
-            return True
-        elif s in ["N", "n"]:
-            return False
-        elif s == "" and default in [True, False]:
-            return default
-
-
-def run_in_dotfiles(command):
-    """Run a command in dotfiles repo."""
-
-    workdir = os.getcwd()
-    os.chdir(os.path.expanduser(config.DIRNAME))
-    val = os.system(command)
-    os.chdir(workdir)
-    if val != 0:
-        raise Exception("return value of '{0}' is non-zero: {1}".format(command, val))
-
 
 def commit_changes(text=None):
     """Commit changes to git repository."""
     text = text or datetime.datetime.now().strftime("%c")
-    run_in_dotfiles("git commit -m \"{0}\"".format(text))
-    run_in_dotfiles("git push origin master")
+    common.run_in_dotfiles("git commit -m \"{0}\"".format(text))
+    common.run_in_dotfiles("git push origin master")
     print("Commited changes with message '{0}'.".format(text))
 
 
 def save_file(filename, yes=False):
     """Save file in SAVEDIR."""
-    if yes or ask("Save {0}?".format(filename, default=True)):
+    if yes or common.ask("Save {0}?".format(filename, default=True)):
         try:
             # --> make name to save
             new_name = os.path.basename(filename)
@@ -60,8 +32,8 @@ def save_file(filename, yes=False):
 
             # --> check state
             st = state.load_state()
-            if st.get(new_name) != filename:
-                if not ask("File {0} was saved from a different place({1}). Replace?".format(
+            if new_name in st and st[new_name] != filename:
+                if not common.ask("File {0} was saved from a different place({1}). Replace?".format(
                     filename, st.get(new_name)
                 ), default=False):
                     raise Exception("file has already been saved from another place")
@@ -80,7 +52,7 @@ def save_file(filename, yes=False):
             # <-- update state
 
             # --> git stuff
-            run_in_dotfiles("git add {0} {1}".format(to_name, common.get_state_file()))
+            common.run_in_dotfiles("git add {0} {1}".format(to_name, common.get_state_file()))
             # --> git stuff
 
             print("Saved {0} to {1}".format(filename, to_name))
